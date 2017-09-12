@@ -1,0 +1,143 @@
+//apply plugin: 'com.putao.build.gradle'
+apply plugin: 'build.gradle'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.0"
+    defaultConfig {
+        applicationId "com.jusenr.android.gradle"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
+    }
+    signingConfigs {
+        release {
+            storeFile file("$rootDir/keystore.jks")
+            storePassword "jusenr123"
+            keyAlias "jusenrkeystore"
+            keyPassword "jusenr123"
+        }
+    }
+    buildTypes {
+        release {
+            //Proguard
+            minifyEnabled false
+            //是否zip对齐
+            zipAlignEnabled true
+            //缩减resource文件
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            //Proguard
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+    sourceSets {
+        main {
+            if (isRunAlone.toBoolean()) {
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+                java.srcDirs = ['src/main/java']
+                res.srcDirs = ['src/main/res']
+            } else {
+                //In integrated development mode, exclude all Java files in the debug folder.
+                java {
+                    exclude 'debug/**'
+                }
+            }
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+    //Apk包名自定义
+    applicationVariants.all {
+        variant ->
+            def apkFileName = defaultConfig.versionName
+//            def time = rootProject.releaseTime("yyyyMMddHHmm")
+            variant.outputs.each {
+                output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        def fileName = outputFile.name.replace(".apk", "-${apkFileName}.apk")
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+            }
+    }
+
+    //产品渠道配置
+    productFlavors {
+//        innerTest {
+//            buildConfigField "boolean", "IS_TEST", "true"
+//            buildConfigField "int", "HOST_NOW", "2"
+//            versionName = "T" + defaultConfig.versionName
+//        }
+//
+//        dev {
+//            buildConfigField "boolean", "IS_TEST", "true"
+//            buildConfigField "int", "HOST_NOW", "3"
+//            versionName = "D" + defaultConfig.versionName
+//        }
+
+        online { versionName = "V" + defaultConfig.versionName }
+
+//        xiaomi { versionName = "V" + defaultConfig.versionName }
+
+        productFlavors.all { flavor ->
+            flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile 'junit:junit:4.12'
+    compile project(':basiclib')
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:appcompat-v7:26.+'
+}
+//编译结束后删除unaligned包
+android.applicationVariants.all { variant ->
+    variant.assemble.doLast {
+        variant.outputs.each { output ->
+            println "aligned " + output.outputFile
+            println "unaligned " + output.packageApplication.outputFile
+
+            File file = output.packageApplication.outputFile;
+            if (variant.buildType.zipAlignEnabled && file.getName().contains("unaligned")) {
+                println "deleting " + file.getName()
+                file.delete()
+            }
+        }
+    }
+}
+
+combuild {
+    applicatonName = 'com.jusenr.android.gradle.TotalApplication'
+    isRegisterCompoAuto = true
+}

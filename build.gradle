@@ -1,0 +1,62 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+        maven { url uri("$rootDir/repo") }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.jusenr.gradle.plugin:build-gradle:1.0.0'
+
+        //maven
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
+        classpath 'com.github.dcendents:android-maven-plugin:1.2'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        flatDir {
+            dirs "$rootDir/componentrelease" //this way we can find the *.aar file in  folder.
+        }
+        maven { url "https://jitpack.io" }
+    }
+    //Global settings for project code.
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+    tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption('encoding', 'UTF-8')
+        options.addStringOption('charSet', 'UTF-8')
+        options.addStringOption('link', 'http://docs.oracle.com/javase/7/docs/api')
+        options.addStringOption('windowtitle', 'build-gradle')
+        options.addBooleanOption('author', true)
+        options.addBooleanOption('version', true)
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+//Get current time.
+def releaseTime(def format) {
+    return new Date().format(format)
+}
+
+//git commit times.
+static int gitVersionCode() {
+    def count = "git rev-list HEAD --count".execute().text.trim()
+    return count.isInteger() ? count.toInteger() : 0
+}
+
+ext {
+    APP_LOG_TAG = "build_gradle"//App print log tag.
+
+}
