@@ -5,8 +5,8 @@ def projectName = "build-gradle"
 def mavenDesc = 'Android project library and application switch plug-in.'
 def baseUrl = 'https://github.com/Jusenr'
 def siteUrl = baseUrl
-def gitUrl = "${baseUrl}/android_paiband.git"
-def issueUrl = "${baseUrl}/android_paiband/issues"
+def gitUrl = "${baseUrl}/android_gradle_development.git"
+def issueUrl = "${baseUrl}/android_gradle_development/issues"
 
 def licenseIds = ['Apache-2.0']
 def licenseNames = ['The Apache Software License, Version 2.0']
