@@ -7,7 +7,7 @@ import org.gradle.api.Task
 
 public class ComBuild implements Plugin<Project> {
 
-    //默认是app，直接运行assembleRelease的时候，等同于运行app:assembleRelease
+    //The default is app, which is equivalent to running app:assembleRelease when running assembleRelease directly.
     String compilemodule = "app"
 
     void apply(Project project) {
@@ -29,13 +29,12 @@ public class ComBuild implements Plugin<Project> {
             throw new RuntimeException("you should set isRunAlone in " + module + "'s gradle.properties")
         }
 
-        //对于isRunAlone==true的情况需要根据实际情况修改其值，
-        // 但如果是false，则不用修改，该module作为一个lib，运行module:assembleRelease则发布aar到中央仓库
+        //For the case of isRunAlone==true, you need to modify its value according to the actual situation, but if it is false, you do not need to modify the module as a lib, run module:assembleRelease, then publish AAR to the central warehouse.
         boolean isRunAlone = Boolean.parseBoolean((project.properties.get("isRunAlone")))
         if (isRunAlone && assembleTask.isAssemble) {
             String mainmodulename = project.rootProject.property("mainmodulename")
-            //对于要编译的组件和主项目，isRunAlone修改为true，其他组件都强制修改为false
-            //这就意味着组件不能引用主项目，这在层级结构里面也是这么规定的
+            //For components and main projects to be compiled, isRunAlone is modified to true, and other components are forced to modify to false.
+            //This means that the component cannot refer to the main project, as is within the hierarchy.
             if (module.equals(compilemodule) || module.equals(mainmodulename)) {
                 isRunAlone = true;
             } else {
@@ -44,7 +43,7 @@ public class ComBuild implements Plugin<Project> {
         }
         project.setProperty("isRunAlone", isRunAlone)
 
-        //根据配置添加各种组件依赖，并且自动化生成组件加载代码
+        //Add various component dependencies based on configuration, and automate the generation of components to load code.
         if (isRunAlone) {
             project.apply plugin: 'com.android.application'
             System.out.println("apply plugin is " + 'com.android.application');
@@ -78,10 +77,12 @@ public class ComBuild implements Plugin<Project> {
     }
 
     /**
-     * 根据当前的task，获取要运行的组件，规则如下：
+     * According to the current task, get the components to run, the rules are as follows:
+     *
      * assembleRelease ---app
      * app:assembleRelease :app:assembleRelease ---app
      * sharecomponent:assembleRelease :sharecomponent:assembleRelease ---sharecomponent
+     *
      * @param assembleTask
      */
     private void fetchMainmodulename(Project project, AssembleTask assembleTask) {
@@ -117,8 +118,9 @@ public class ComBuild implements Plugin<Project> {
     }
 
     /**
-     * 自动添加依赖，只在运行assemble任务的才会添加依赖，因此在开发期间组件之间是完全感知不到的，这是做到完全隔离的关键
-     * 支持两种语法：module或者modulePackage:module,前者之间引用module工程，后者使用componentrelease中已经发布的aar
+     * Automatically add dependencies to add dependencies only when running the assemble task, so it is completely invisible between components during development, which is the key to complete isolation.
+     * Support two kinds of syntax: module or modulePackage:module; the former refers to the module project, and the latter uses the AAR already published in componentrelease.
+     *
      * @param assembleTask
      * @param project
      */

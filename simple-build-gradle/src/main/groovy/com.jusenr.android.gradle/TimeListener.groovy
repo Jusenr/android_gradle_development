@@ -9,6 +9,9 @@ import org.gradle.api.invocation.Gradle
 import org.gradle.api.tasks.TaskState
 import org.gradle.util.Clock
 
+/**
+ * Task execution consumes time listening.
+ */
 class TimeListener implements TaskExecutionListener, BuildListener {
     private Clock clock
     private times = []

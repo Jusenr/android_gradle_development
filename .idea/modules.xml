@@ -5,8 +5,8 @@
       <module fileurl="file://$PROJECT_DIR$/android_gradle_development.iml" filepath="$PROJECT_DIR$/android_gradle_development.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/basiclib/basiclib.iml" filepath="$PROJECT_DIR$/basiclib/basiclib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/build-gradle/build-gradle.iml" filepath="$PROJECT_DIR$/build-gradle/build-gradle.iml" />
       <module fileurl="file://$PROJECT_DIR$/logincomponent/logincomponent.iml" filepath="$PROJECT_DIR$/logincomponent/logincomponent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/simple-build-gradle/simple-build-gradle.iml" filepath="$PROJECT_DIR$/simple-build-gradle/simple-build-gradle.iml" />
     </modules>
   </component>
 </project>

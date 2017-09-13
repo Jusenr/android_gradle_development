@@ -1,1 +1,1 @@
-include ':app', ':logincomponent', ':basiclib', ':build-gradle'
+include ':app', ':logincomponent', ':basiclib', ':simple-build-gradle'

@@ -1,12 +1,11 @@
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
-def projectName = "build-gradle"
+def projectName = "simple-build-gradle"
 def mavenDesc = 'Android project library and application switch plug-in.'
-def baseUrl = 'https://github.com/Jusenr'
-def siteUrl = baseUrl
-def gitUrl = "${baseUrl}/android_gradle_development.git"
-def issueUrl = "${baseUrl}/android_gradle_development/issues"
+def siteUrl = 'https://github.com/Jusenr'
+def gitUrl = "${siteUrl}/android_gradle_development.git"
+def issueUrl = "${siteUrl}/android_gradle_development/issues"
 
 def licenseIds = ['Apache-2.0']
 def licenseNames = ['The Apache Software License, Version 2.0']

@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'com.jusenr.gradle.plugin:build-gradle:1.0.0'
+        classpath 'com.jusenr.gradle.plugin:simple-build-gradle:1.1.0'
 
         //maven
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
@@ -24,7 +24,7 @@ allprojects {
         flatDir {
             dirs "$rootDir/componentrelease" //this way we can find the *.aar file in  folder.
         }
-        maven { url "https://jitpack.io" }
+//        maven { url "https://jitpack.io" }
     }
     //Global settings for project code.
     tasks.withType(JavaCompile) {

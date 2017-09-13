@@ -10,8 +10,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/basiclib" />
-            <option value="$PROJECT_DIR$/build-gradle" />
             <option value="$PROJECT_DIR$/logincomponent" />
+            <option value="$PROJECT_DIR$/simple-build-gradle" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
