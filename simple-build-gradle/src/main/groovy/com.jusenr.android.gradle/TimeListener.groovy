@@ -16,6 +16,9 @@ class TimeListener implements TaskExecutionListener, BuildListener {
     private Clock clock
     private times = []
 
+    TimeListener() {
+    }
+
     @Override
     void beforeExecute(Task task) {
         clock = new org.gradle.util.Clock()

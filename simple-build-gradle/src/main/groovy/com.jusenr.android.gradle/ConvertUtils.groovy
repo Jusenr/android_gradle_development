@@ -10,6 +10,10 @@ import java.util.jar.JarFile
 import java.util.regex.Matcher
 
 class ConvertUtils {
+
+    ConvertUtils() {
+    }
+
     static List<CtClass> toCtClasses(Collection<TransformInput> inputs, ClassPool classPool) {
         List<String> classNames = new ArrayList<>()
         List<CtClass> allClass = new ArrayList<>();

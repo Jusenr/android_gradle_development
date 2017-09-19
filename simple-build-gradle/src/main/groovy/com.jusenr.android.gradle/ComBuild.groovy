@@ -8,10 +8,16 @@ import org.gradle.api.Task
 public class ComBuild implements Plugin<Project> {
 
     //The default is app, which is equivalent to running app:assembleRelease when running assembleRelease directly.
-    String compilemodule = "app"
+    private String compilemodule = "app"
+
+    ComBuild() {
+    }
 
     void apply(Project project) {
-        project.gradle.addListener(new TimeListener())
+        boolean showtime = project.properties.get("showTime")
+        if (showtime) {
+            project.gradle.addListener(new TimeListener())
+        }
         project.extensions.create('combuild', ComExtension)
 
         String taskNames = project.gradle.startParameter.taskNames.toString()
@@ -31,8 +37,9 @@ public class ComBuild implements Plugin<Project> {
 
         //For the case of isRunAlone==true, you need to modify its value according to the actual situation, but if it is false, you do not need to modify the module as a lib, run module:assembleRelease, then publish AAR to the central warehouse.
         boolean isRunAlone = Boolean.parseBoolean((project.properties.get("isRunAlone")))
+
         if (isRunAlone && assembleTask.isAssemble) {
-            String mainmodulename = project.rootProject.property("mainmodulename")
+            String mainmodulename = project.properties.get("mainmodulename")
             //For components and main projects to be compiled, isRunAlone is modified to true, and other components are forced to modify to false.
             //This means that the component cannot refer to the main project, as is within the hierarchy.
             if (module.equals(compilemodule) || module.equals(mainmodulename)) {
@@ -76,25 +83,25 @@ public class ComBuild implements Plugin<Project> {
 
     }
 
-    /**
-     * According to the current task, get the components to run, the rules are as follows:
-     *
-     * assembleRelease ---app
-     * app:assembleRelease :app:assembleRelease ---app
-     * sharecomponent:assembleRelease :sharecomponent:assembleRelease ---sharecomponent
-     *
-     * @param assembleTask
-     */
+/**
+ * According to the current task, get the components to run, the rules are as follows:
+ *
+ * assembleRelease ---app
+ * app:assembleRelease :app:assembleRelease ---app
+ * sharecomponent:assembleRelease :sharecomponent:assembleRelease ---sharecomponent
+ *
+ * @param assembleTask
+ */
     private void fetchMainmodulename(Project project, AssembleTask assembleTask) {
-        if (!project.rootProject.hasProperty("mainmodulename")) {
-            throw new RuntimeException("you should set compilemodule in rootproject's gradle.properties")
-        }
+//        if (!project.rootProject.hasProperty("mainmodulename")) {
+//            throw new RuntimeException("you should set compilemodule in rootproject's gradle.properties")
+//        }
         if (assembleTask.modules.size() > 0 && assembleTask.modules.get(0) != null
                 && assembleTask.modules.get(0).trim().length() > 0
                 && !assembleTask.modules.get(0).equals("all")) {
             compilemodule = assembleTask.modules.get(0);
         } else {
-            compilemodule = project.rootProject.property("mainmodulename")
+            compilemodule = project.properties.get("mainmodulename")
         }
         if (compilemodule == null || compilemodule.trim().length() <= 0) {
             compilemodule = "app"
@@ -117,13 +124,13 @@ public class ComBuild implements Plugin<Project> {
         return assembleTask
     }
 
-    /**
-     * Automatically add dependencies to add dependencies only when running the assemble task, so it is completely invisible between components during development, which is the key to complete isolation.
-     * Support two kinds of syntax: module or modulePackage:module; the former refers to the module project, and the latter uses the AAR already published in componentrelease.
-     *
-     * @param assembleTask
-     * @param project
-     */
+/**
+ * Automatically add dependencies to add dependencies only when running the assemble task, so it is completely invisible between components during development, which is the key to complete isolation.
+ * Support two kinds of syntax: module or modulePackage:module; the former refers to the module project, and the latter uses the AAR already published in componentrelease.
+ *
+ * @param assembleTask
+ * @param project
+ */
     private void compileComponents(AssembleTask assembleTask, Project project) {
         String components;
         if (assembleTask.isDebug) {
@@ -163,5 +170,4 @@ public class ComBuild implements Plugin<Project> {
         boolean isDebug = false;
         List<String> modules = new ArrayList<>();
     }
-
 }
