@@ -3,7 +3,7 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url uri("$rootDir/repo") }
+//        maven { url uri("$rootDir/repo") }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
