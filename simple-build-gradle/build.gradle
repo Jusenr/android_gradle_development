@@ -14,8 +14,8 @@ repositories {
     mavenCentral()
 }
 
-group = 'com.jusenr.gradle.plugin'
-version = '1.1.4'
+group = project.properties["PROJ_GROUP"]
+version = project.properties["PROJ_VERSIONNAME"]
 
 uploadArchives {
     repositories {
@@ -23,6 +23,6 @@ uploadArchives {
             repository(url: uri("$rootDir/repo"))
         }
     }
-}  
+}
 
-apply from: "$rootDir/bintray.gradle"
+apply from: "https://raw.githubusercontent.com/Jusenr/resources/master/bintray1.gradle"
